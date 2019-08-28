@@ -26,12 +26,13 @@ def get_page(playlist_id, page_token=None):
 def get_all_titles(playlist_id):
     page_json = get_page(playlist_id)
     next_page_token = page_json.get("nextPageToken")
-    titles = list(get_titles_from_page(page_json))
+    for title in get_titles_from_page(page_json):
+        yield title
     while(next_page_token):
         page_json = get_page(playlist_id, page_token=next_page_token)
-        titles.extend(get_titles_from_page(page_json))
         next_page_token = page_json.get("nextPageToken")
-    return titles
+        for title in get_titles_from_page(page_json):
+            yield title
 
 def main():
     if not youtube_api_key:
